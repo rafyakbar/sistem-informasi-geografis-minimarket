@@ -1,0 +1,25 @@
+.custom-control {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.custom-control-lg .custom-control-label::before,
+.custom-control-lg .custom-control-label::after {
+  top: 0;
+  width: 25px;
+  height: 25px;
+  border-radius: 5px;
+}
+
+.custom-control-label {
+  margin-left: 10px;
+}
+
+.custom-control-label:not(.disabled):hover::after {
+  background-color: #42a5f5;
+}
+
