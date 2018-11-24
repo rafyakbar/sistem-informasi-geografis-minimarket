@@ -19,14 +19,14 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
     Route::get('dashboard', function () {
         return redirect()->route('perusahaan');
-    });
+    })->name('admin.perusahaan');
 
 
     Route::get('perusahaan', [
         'uses' => 'PerusahaanController@index',
-        'as' => 'perusahaan'
+        'as' => 'admin.perusahaan'
     ]);
 });
