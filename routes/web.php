@@ -18,3 +18,15 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('dashboard', function () {
+        return redirect()->route('perusahaan');
+    });
+
+
+    Route::get('perusahaan', [
+        'uses' => 'PerusahaanController@index',
+        'as' => 'perusahaan'
+    ]);
+});
