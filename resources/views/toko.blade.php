@@ -33,14 +33,15 @@
                     <thead>
                     <tr>
                         <td>No</td>
-                        <td>Perusahaan</td>
+                        <td width="9%">Perusahaan</td>
                         <td>Negara</td>
                         <td>Provinsi</td>
                         <td>Kota</td>
                         <td>Kecamatan</td>
-                        <td>Alamat</td>
+                        <td width="15%">Alamat</td>
                         <td>Latitude</td>
                         <td>Longitude</td>
+                        <td width="15%">Catatan</td>
                         <td>Aksi</td>
                     </tr>
                     </thead>
@@ -48,16 +49,42 @@
                     @foreach($tokos as $toko)
                         <tr>
                             <td>{{ ($tokos->currentpage() * $tokos->perpage()) + ($loop->iteration) - $tokos->perpage() }}</td>
-                            <td>{{ $toko->getPerusahaan(false)->nama }}</td>
-                            <td>{{ $toko->negara }}</td>
-                            <td>{{ $toko->provinsi }}</td>
-                            <td>{{ $toko->kota }}</td>
-                            <td>{{ $toko->kecamatan }}</td>
-                            <td>{{ $toko->alamat }}</td>
-                            <td>{{ $toko->lat }}</td>
-                            <td>{{ $toko->lng }}</td>
                             <td>
-                                <button class="btn btn-primary btn-sm">Detail/Edit</button>
+                                <select class="form-control" name="perusahaan_id" id="perusahaan-{{ $toko->id }}">
+                                    <option value="{{ $toko->perusahaan_id }}">{{ $toko->getPerusahaan(false)->nama }}</option>
+                                    @foreach($perusahaans as $perusahaan)
+                                        @if($toko->perusahaan_id != $perusahaan->id)
+                                            <option value="{{ $perusahaan->nama }}">{{ $perusahaan->nama }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td>
+                                <input id="negara-{{ $toko->id }}" type="text" class="form-control" value="{{ $toko->negara }}">
+                            </td>
+                            <td>
+                                <input id="provinsi-{{ $toko->id }}" type="text" class="form-control" value="{{ $toko->provinsi }}">
+                            </td>
+                            <td>
+                                <input id="kota-{{ $toko->id }}" type="text" class="form-control" value="{{ $toko->kota }}">
+                            </td>
+                            <td>
+                                <input id="kecamatan-{{ $toko->id }}" type="text" class="form-control" value="{{ $toko->kecamatan }}">
+                            </td>
+                            <td>
+                                <textarea id="alamat-{{ $toko->id }}" class="form-control">{{ $toko->alamat }}</textarea>
+                            </td>
+                            <td>
+                                <input id="lat-{{ $toko->id }}" type="text" class="form-control" value="{{ $toko->lat }}">
+                            </td>
+                            <td>
+                                <input id="lng-{{ $toko->id }}" type="text" class="form-control" value="{{ $toko->lng }}">
+                            </td>
+                            <td>
+                                <textarea id="catatan-{{ $toko->id }}" class="form-control">{{ $toko->catatan }}</textarea>
+                            </td>
+                            <td>
+                                <button onclick="event.preventDefault(); update('{{ $toko->id }}', $('#perusahaan-{{ $toko->id }}').val(), $('#negara-{{ $toko->id }}').val(), $('#provinsi-{{ $toko->id }}').val(), $('#kota-{{ $toko->id }}').val(), $('#kecamatan-{{ $toko->id }}').val(), $('#alamat-{{ $toko->id }}').val(), $('#lat-{{ $toko->id }}').val(), $('#lng-{{ $toko->id }}').val(), $('#catatan-{{ $toko->id }}').val())" class="btn btn-success btn-sm">Simpan</button>
                             </td>
                         </tr>
                     @endforeach
@@ -68,6 +95,28 @@
         </div>
 
         <div id="tambah-toko" style="display: none">
+            <h4>Tambah minimarket berdasarkan lokasi</h4>
+            <form action="{{ route('admin.toko.store.many') }}" method="post" id="formaddmany">
+                @csrf
+                <div class="row">
+                    <div class="col-lg-4">
+                        <select class="form-control" name="perusahaan">
+                            @foreach($perusahaans as $perusahaan)
+                                <option value="{{ $perusahaan->id }}">{{ $perusahaan->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="text" name="lokasi" class="form-control" placeholder="contoh : jawa timur">
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="submit" id="addmany" class="btn btn-success" value="Tambahkan">
+                    </div>
+                </div>
+
+            </form>
+            <hr>
+            <h4>Tambah 1 1</h4>
             <div class="row">
                 <div class="col-lg-6">
                     <form action="{{ route('admin.toko.store') }}" method="post" enctype="multipart/form-data">
@@ -149,6 +198,20 @@
             </div>
         </div>
     </div>
+
+    <form style="display: none" id="form-update" action="{{ route('admin.toko.update') }}" method="post">
+        @csrf
+        <input type="hidden" id="update-id" name="id">
+        <input type="hidden" id="update-perusahaan_id" name="perusahaan_id">
+        <input type="hidden" id="update-negara" name="negara">
+        <input type="hidden" id="update-provinsi" name="provinsi">
+        <input type="hidden" id="update-kota" name="kota">
+        <input type="hidden" id="update-kecamatan" name="kecamatan">
+        <input type="hidden" id="update-alamat" name="alamat">
+        <input type="hidden" id="update-lat" name="lat">
+        <input type="hidden" id="update-lng" name="lng">
+        <input type="hidden" id="update-catatan" name="catatan">
+    </form>
 @endsection
 
 @push('js')
@@ -305,6 +368,21 @@
                     alert("An unknown error occurred!")
                     break;
             }
+        }
+
+        function update(id, pi, negara, provinsi, kota, kecamatan, alamat, lat, lng, catatan) {
+            $('#update-id').val(id)
+            $('#update-perusahaan_id').val(pi)
+            $('#update-negara').val(negara)
+            $('#update-provinsi').val(provinsi)
+            $('#update-kota').val(kota)
+            $('#update-kecamatan').val(kecamatan)
+            $('#update-alamat').val(alamat)
+            $('#update-lat').val(lat)
+            $('#update-lng').val(lng)
+            $('#update-catatan').val(catatan)
+
+            $('#form-update').submit()
         }
     </script>
 

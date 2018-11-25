@@ -37,9 +37,19 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
             'as' => 'admin.toko'
         ]);
 
-        Route::post('', [
+        Route::post('store', [
             'uses' => 'TokoController@store',
             'as' => 'admin.toko.store'
+        ]);
+
+        Route::post('store/many', [
+            'uses' => 'TokoController@storeMany',
+            'as' => 'admin.toko.store.many'
+        ]);
+
+        Route::post('update', [
+            'uses' => 'TokoController@update',
+            'as' => 'admin.toko.update'
         ]);
     });
 

@@ -23,6 +23,7 @@ class TokoSeeder extends Seeder
                     'negara' => 'Indonesia',
                     'provinsi' => ['Jawa Timur', 'Jawa Tengah', 'Jawa Barat', 'DKI Jakarta'][rand(0, 3)],
                     'kota' => $faker->city,
+                    'kecamatan' => $faker->citySuffix,
                     'alamat' => $faker->address,
                     'lat' => $faker->latitude,
                     'lng' => $faker->longitude,
