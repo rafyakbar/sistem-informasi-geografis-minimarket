@@ -58,7 +58,8 @@ class TokoController extends Controller
             'kecamatan' => $request->kecamatan,
             'alamat' => $request->alamat,
             'lat' => $request->lat,
-            'lng' => $request->lng
+            'lng' => $request->lng,
+            'catatan' => $request->catatan
         ]);
 
         if ($request->has('foto')){
@@ -83,8 +84,6 @@ class TokoController extends Controller
         $query = $perusahaan->nama.' '.$request->lokasi;
 
         $tokos = OpenStreetMaps::geocode($query, 50);
-
-//        dd($tokos);
 
         foreach ($tokos as $toko){
             $geocode = OpenStreetMaps::reverseGeocode($toko->lat, $toko->lon, 15);
@@ -112,5 +111,22 @@ class TokoController extends Controller
     public function reverse(Request $request)
     {
         return json_encode(OpenStreetMaps::reverseGeocode($request->lat, $request->lng));
+    }
+
+    public function update(Request $request)
+    {
+        Toko::find($request->id)->update([
+            'perusahaan_id' => $request->perusahaan_id,
+            'negara' => $request->negara,
+            'provinsi' => $request->provinsi,
+            'kota' => $request->kota,
+            'kecamatan' => $request->kecamatan,
+            'alamat' => $request->alamat,
+            'lat' => $request->lat,
+            'lng' => $request->lng,
+            'catatan' => $request->catatan
+        ]);
+
+        return back();
     }
 }
