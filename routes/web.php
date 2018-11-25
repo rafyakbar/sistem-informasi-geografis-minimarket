@@ -39,4 +39,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         'uses' => 'TokoController@geocode',
         'as' => 'admin.geocode'
     ]);
+
+    Route::get('reverse', [
+        'uses' => 'TokoController@reverse',
+        'as' => 'admin.reverse'
+    ]);
 });

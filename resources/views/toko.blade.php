@@ -73,19 +73,19 @@
                         <div class="row">
                             <div class="col-lg-3">
                                 <label>Negara</label>
-                                <input type="text" name="negara" class="form-control">
+                                <input id="negara" type="text" name="negara" class="form-control">
                             </div>
                             <div class="col-lg-3">
                                 <label>Provinsi</label>
-                                <input type="text" name="provinsi" class="form-control">
+                                <input id="provinsi" type="text" name="provinsi" class="form-control">
                             </div>
                             <div class="col-lg-3">
                                 <label>Kota</label>
-                                <input type="text" name="provinsi" class="form-control">
+                                <input id="kota" type="text" name="provinsi" class="form-control">
                             </div>
                             <div class="col-lg-3">
                                 <label>Kecamatan</label>
-                                <input type="text" name="provinsi" class="form-control">
+                                <input id="kecamatan" type="text" name="provinsi" class="form-control">
                             </div>
                         </div>
                         <br>
@@ -93,17 +93,23 @@
                         <textarea id="alamat" class="form-control" name="alamat"></textarea>
                         <br>
                         <div class="row">
-                            <div class="col-lg-5">
+                            <div class="col-lg-4">
                                 <label>Latitude</label>
+                                <br>
                                 <input id="lat" type="text" name="lat" class="form-control">
                             </div>
-                            <div class="col-lg-5">
+                            <div class="col-lg-4">
                                 <label>Longitude</label>
+                                <br>
                                 <input id="lng" type="text" name="lng" class="form-control">
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-lg-4">
                                 <label>Aksi</label>
-                                <button class="btn btn-info" title="Geocode dari alamat" id="geocode" type="button">Geocode</button>
+                                <br>
+                                <div class="btn-group">
+                                    <button class="btn btn-info" title="Geocode dari alamat" id="geocode" type="button">Geocode</button>
+                                    <button class="btn btn-primary" title="Reverse Geocode" id="reverse" type="button">Reverse</button>
+                                </div>
                             </div>
                         </div>
                         <br>
@@ -170,6 +176,47 @@
                 })
             } else {
                 alert('Alamat tidak boleh kosong!')
+            }
+        })
+
+        $('#reverse').click(function () {
+            var lat = $('#lat').val()
+            var lng = $('#lng').val()
+            if (lat != '' && lng != ''){
+                $(this).html('Reversing...')
+
+                $.ajax({
+                    type: 'get',
+                    url: '{{ route('admin.reverse') }}',
+                    data: {
+                        lat: lat,
+                        lng: lng
+                    },
+                    success: function (response) {
+                        var data = JSON.parse(response)
+
+                        if (data.length != 0){
+                            if (confirm('Apakah anda ingin memperbarui data lokasi?')){
+                                $('#negara').val(data.address.country)
+                                $('#provinsi').val(data.address.state)
+                                $('#kota').val(data.address.city)
+                                $('#kecamatan').val(data.address.county)
+                                $('#alamat').val(data.display_name)
+                            }
+
+                            $('#reverse').html('Reverse')
+                        } else {
+                            $('#reverse').html('Reverse')
+                            alert('Data tidak ditemukan')
+                        }
+                    },
+                    error: function () {
+                        $('#geocode').html('Geocode')
+                        alert('Gagal mengambil data')
+                    }
+                })
+            } else {
+                alert('Latitude dan longitude harus terisi!')
             }
         })
 

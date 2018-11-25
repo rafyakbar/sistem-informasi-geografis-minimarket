@@ -55,4 +55,9 @@ class TokoController extends Controller
     {
         return json_encode(OpenStreetMaps::geocode($request->alamat));
     }
+
+    public function reverse(Request $request)
+    {
+        return json_encode(OpenStreetMaps::reverseGeocode($request->lat, $request->lng));
+    }
 }
