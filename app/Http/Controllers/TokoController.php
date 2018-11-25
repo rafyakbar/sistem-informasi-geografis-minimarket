@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Foto;
 use App\Perusahaan;
 use App\Supports\OpenStreetMaps;
 use App\Toko;
@@ -11,7 +12,6 @@ class TokoController extends Controller
 {
     public function index(Request $request)
     {
-//        dd(OpenStreetMaps::geocode('Surabaya, jawa timur'));
         $tokos = Toko::query()->when($request->perusahaan, function ($query) use ($request) {
             $query->whereHas('getPerusahaan', function ($query) use ($request){
                 $query->where('nama', $request->perusahaan);
@@ -36,10 +36,7 @@ class TokoController extends Controller
                         $query->where('kecamatan', 'ILIKE', '%'.$kecamatan.'%');
                 });
             }
-        })
-//            ->toSql();
-//        dd($tokos);
-            ->orderBy('created_at')
+        })->orderBy('created_at')
             ->paginate(10)
             ->appends($request->all());
 
@@ -49,6 +46,34 @@ class TokoController extends Controller
             'perusahaan' => $request->perusahaan,
             'npkk' => $request->npkk
         ]);
+    }
+
+    public function store(Request $request)
+    {
+        $toko = Toko::create([
+            'perusahaan_id' => $request->perusahaan,
+            'negara' => $request->negara,
+            'provinsi' => $request->provinsi,
+            'kota' => $request->kota,
+            'kecamatan' => $request->kecamatan,
+            'alamat' => $request->alamat,
+            'lat' => $request->lat,
+            'lng' => $request->lng
+        ]);
+
+        if ($request->has('foto')){
+            foreach ($request->foto as $file){
+                $foto = Foto::create([
+                    'galeri_id' => $toko->id,
+                    'dir' => ''
+                ]);
+                $file->move('images/galeri', $foto->id.'_'.$foto->id.'_'.$file->getClientOriginalName());
+                $foto->dir = 'images/galeri/'.$foto->id.'_'.$foto->id.'_'.$file->getClientOriginalName();
+                $foto->save();
+            }
+        }
+
+        return back();
     }
 
     public function geocode(Request $request)

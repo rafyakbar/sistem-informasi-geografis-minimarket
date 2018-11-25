@@ -32,7 +32,6 @@ class CreateTokoTable extends Migration
             $table->text('alamat');
             $table->string('lat');
             $table->string('lng');
-            $table->bigInteger('luas_tanah');
             $table->text('catatan')
                 ->nullable();
             $table->timestamps();

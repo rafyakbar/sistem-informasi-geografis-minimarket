@@ -30,10 +30,17 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         'as' => 'admin.perusahaan'
     ]);
 
-    Route::get('toko', [
-        'uses' => 'TokoController@index',
-        'as' => 'admin.toko'
-    ]);
+    Route::group(['prefix' => 'toko'], function () {
+        Route::get('', [
+            'uses' => 'TokoController@index',
+            'as' => 'admin.toko'
+        ]);
+
+        Route::post('', [
+            'uses' => 'TokoController@store',
+            'as' => 'admin.toko.store'
+        ]);
+    });
 
     Route::get('geocode', [
         'uses' => 'TokoController@geocode',

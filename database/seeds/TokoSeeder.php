@@ -26,7 +26,6 @@ class TokoSeeder extends Seeder
                     'alamat' => $faker->address,
                     'lat' => $faker->latitude,
                     'lng' => $faker->longitude,
-                    'luas_tanah' => rand(10,20) * 10,
                 ]);
             }
         }

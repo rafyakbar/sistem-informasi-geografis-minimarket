@@ -34,6 +34,10 @@
                     <tr>
                         <td>No</td>
                         <td>Perusahaan</td>
+                        <td>Negara</td>
+                        <td>Provinsi</td>
+                        <td>Kota</td>
+                        <td>Kecamatan</td>
                         <td>Alamat</td>
                         <td>Latitude</td>
                         <td>Longitude</td>
@@ -45,6 +49,10 @@
                         <tr>
                             <td>{{ ($tokos->currentpage() * $tokos->perpage()) + ($loop->iteration) - $tokos->perpage() }}</td>
                             <td>{{ $toko->getPerusahaan(false)->nama }}</td>
+                            <td>{{ $toko->negara }}</td>
+                            <td>{{ $toko->provinsi }}</td>
+                            <td>{{ $toko->kota }}</td>
+                            <td>{{ $toko->kecamatan }}</td>
                             <td>{{ $toko->alamat }}</td>
                             <td>{{ $toko->lat }}</td>
                             <td>{{ $toko->lng }}</td>
@@ -62,30 +70,45 @@
         <div id="tambah-toko" style="display: none">
             <div class="row">
                 <div class="col-lg-6">
-                    <form>
-                        <label>Perusahaan</label>
-                        <select class="form-control" name="perusahaan">
-                            @foreach($perusahaans as $perusahaan)
-                                <option value="{{ $perusahaan->nama }}">{{ $perusahaan->nama }}</option>
-                            @endforeach
-                        </select>
+                    <form action="{{ route('admin.toko.store') }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label>Perusahaan</label>
+                                <br>
+                                <select class="form-control" name="perusahaan">
+                                    @foreach($perusahaans as $perusahaan)
+                                        <option value="{{ $perusahaan->id }}">{{ $perusahaan->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-lg-6">
+                                <label>Foto-foto</label>
+                                <br>
+                                <input type="file" class="form-control" name="foto" multiple accept="image/*">
+                            </div>
+                        </div>
                         <br>
                         <div class="row">
                             <div class="col-lg-3">
                                 <label>Negara</label>
+                                <br>
                                 <input id="negara" type="text" name="negara" class="form-control">
                             </div>
                             <div class="col-lg-3">
                                 <label>Provinsi</label>
+                                <br>
                                 <input id="provinsi" type="text" name="provinsi" class="form-control">
                             </div>
                             <div class="col-lg-3">
                                 <label>Kota</label>
-                                <input id="kota" type="text" name="provinsi" class="form-control">
+                                <br>
+                                <input id="kota" type="text" name="kota" class="form-control">
                             </div>
                             <div class="col-lg-3">
                                 <label>Kecamatan</label>
-                                <input id="kecamatan" type="text" name="provinsi" class="form-control">
+                                <br>
+                                <input id="kecamatan" type="text" name="kecamatan" class="form-control">
                             </div>
                         </div>
                         <br>
@@ -117,6 +140,7 @@
                         <textarea class="form-control" name="catatan" rows="5" placeholder="Tambahkan info seperti jam buka dll"></textarea>
                         <br>
                         <input type="submit" class="btn btn-success" value="Simpan">
+                        <button id="geolocation" type="button" class="btn btn-info">Geolocation</button>
                     </form>
                 </div>
                 <div class="col-lg-6">
@@ -220,6 +244,10 @@
             }
         })
 
+        $('#geolocation').click(function () {
+            geolocation()
+        })
+
         function initMap() {
             unesa = {lat:  -7.3129590, lng: 112.7273454};
 
@@ -242,12 +270,41 @@
             })
         }
 
-        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-            infoWindow.setPosition(pos);
-            infoWindow.setContent(browserHasGeolocation ?
-                'Error: The Geolocation service failed.' :
-                'Error: Your browser doesn\'t support geolocation.');
-            infoWindow.open(map);
+        function geolocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position, showError);
+            } else {
+                alert('Geolocation is not supported by this browser!')
+            }
+        }
+
+        function position(position) {
+            $('#lat').val(position.coords.latitude)
+            $('#lng').val(position.coords.longitude)
+
+            var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+
+            marker.setPosition(latlng)
+            map.setCenter(latlng)
+
+            $('#reverse').click()
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation!")
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable!")
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out!")
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred!")
+                    break;
+            }
         }
     </script>
 

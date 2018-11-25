@@ -15,13 +15,7 @@ class PerusahaanSeeder extends Seeder
         $names = [
             'Indomaret',
             'Alfamart',
-            'Alfamidi',
-            'Bright',
-            'Circle K',
-            'Yomart',
-            'Ceriamart',
-            'Lawson',
-            'Papaya'
+            'Alfamidi'
         ];
 
         foreach ($names as $name){
