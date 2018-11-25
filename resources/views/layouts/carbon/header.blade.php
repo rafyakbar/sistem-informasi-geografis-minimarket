@@ -1,7 +1,7 @@
 <nav class="navbar page-header">
 
     <a style="width: auto" class="navbar-brand" href="{{ url('/') }}">
-        Sistem Informasi Geografis Minimarket
+        SIG Minimarket
     </a>
 
     <ul class="navbar-nav ml-auto">

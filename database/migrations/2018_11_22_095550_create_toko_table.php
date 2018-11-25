@@ -22,13 +22,13 @@ class CreateTokoTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string('negara')
-                ->default('');
+                ->nullable();
             $table->string('provinsi')
-                ->default('');
+                ->nullable();
             $table->string('kota')
-                ->default('');
+                ->nullable();
             $table->string('kecamatan')
-                ->default('');
+                ->nullable();
             $table->text('alamat');
             $table->string('lat');
             $table->string('lng');

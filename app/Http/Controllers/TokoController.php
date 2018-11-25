@@ -76,6 +76,34 @@ class TokoController extends Controller
         return back();
     }
 
+    public function storeMany(Request $request)
+    {
+        $perusahaan = Perusahaan::find($request->perusahaan);
+
+        $query = $perusahaan->nama.' '.$request->lokasi;
+
+        $tokos = OpenStreetMaps::geocode($query, 50);
+
+//        dd($tokos);
+
+        foreach ($tokos as $toko){
+            $geocode = OpenStreetMaps::reverseGeocode($toko->lat, $toko->lon, 15);
+
+            Toko::create([
+                'perusahaan_id' => $perusahaan->id,
+                'negara' => $geocode->address->country ?? '',
+                'provinsi' => $geocode->address->state ?? '',
+                'kota' => $geocode->address->city ?? '',
+                'kecamatan' => $geocode->address->county ?? '',
+                'alamat' => $toko->display_name,
+                'lat' => $toko->lat,
+                'lng' => $toko->lon
+            ]);
+        }
+
+        return back();
+    }
+
     public function geocode(Request $request)
     {
         return json_encode(OpenStreetMaps::geocode($request->alamat));
