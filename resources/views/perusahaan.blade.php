@@ -3,8 +3,10 @@
 ])
 
 @section('content')
-    <div class="">
+    <div class="row">
+        <div class="col-lg-8">
 
+        </div>
     </div>
     <div id="map" style="width: 100%; height: 100%"></div>
 @endsection

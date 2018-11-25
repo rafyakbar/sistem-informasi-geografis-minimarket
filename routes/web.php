@@ -29,4 +29,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         'uses' => 'PerusahaanController@index',
         'as' => 'admin.perusahaan'
     ]);
+
+    Route::get('toko', [
+        'uses' => 'TokoController@index',
+        'as' => 'admin.toko'
+    ]);
+
+    Route::get('geocode', [
+        'uses' => 'TokoController@geocode',
+        'as' => 'admin.geocode'
+    ]);
 });

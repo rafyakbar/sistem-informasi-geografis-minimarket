@@ -8,7 +8,6 @@
 
 namespace App\Supports;
 
-
 use GuzzleHttp\Client;
 
 class Helper

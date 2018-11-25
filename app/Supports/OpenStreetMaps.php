@@ -11,10 +11,31 @@ namespace App\Supports;
 
 class OpenStreetMaps
 {
-    const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search.php?format=json&q=';
+    const GEOCODE_URL = 'https://nominatim.openstreetmap.org/search.php?format=json&q=';
+
+    const REVERSE_GEOCODE_URL = 'https://nominatim.openstreetmap.org/reverse?format=json&zoom=';
 
     public static function geocode(string $address)
     {
-        return json_decode(Helper::getResponseFromUrl(self::NOMINATIM_URL.urlencode($address)));
+        $query = self::GEOCODE_URL.urlencode($address);
+
+        $response = Helper::getResponseFromUrl($query);
+
+        $result = json_decode($response);
+
+        return $result;
+    }
+
+    public static function reverseGeocode(string $lat, string $lng, int $zoom_level = 18)
+    {
+        $zoom_level = ($zoom_level > 18) ? 18 : ($zoom_level < 0) ? 0 : $zoom_level;
+
+        $query = self::REVERSE_GEOCODE_URL.$zoom_level."&lat={$lat}&lon={$lng}";
+
+        $response = Helper::getResponseFromUrl($query);
+
+        $result = json_decode($response);
+
+        return $result;
     }
 }

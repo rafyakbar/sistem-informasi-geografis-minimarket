@@ -10,7 +10,7 @@ class PerusahaanController extends Controller
 {
     public function index()
     {
-        dd(OpenStreetMaps::geocode('surabaya'));
+//        dd(OpenStreetMaps::geocode('surabaya'));
 
         return view('perusahaan');
     }
