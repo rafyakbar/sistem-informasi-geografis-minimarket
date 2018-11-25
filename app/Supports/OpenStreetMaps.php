@@ -15,9 +15,9 @@ class OpenStreetMaps
 
     const REVERSE_GEOCODE_URL = 'https://nominatim.openstreetmap.org/reverse?format=json&zoom=';
 
-    public static function geocode(string $address)
+    public static function geocode(string $address, int $limit = 5)
     {
-        $query = self::GEOCODE_URL.urlencode($address);
+        $query = self::GEOCODE_URL.urlencode($address).'&limit='.$limit;
 
         $response = Helper::getResponseFromUrl($query);
 
