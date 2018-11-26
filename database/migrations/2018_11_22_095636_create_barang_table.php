@@ -15,7 +15,7 @@ class CreateBarangTable extends Migration
     {
         Schema::create('barang', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('kategori_id');
+            $table->integer('kategori_id')->unsigned();
             $table->foreign('kategori_id')
                 ->references('id')
                 ->on('kategori')

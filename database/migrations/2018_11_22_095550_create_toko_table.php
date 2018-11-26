@@ -15,7 +15,7 @@ class CreateTokoTable extends Migration
     {
         Schema::create('toko', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('perusahaan_id');
+            $table->integer('perusahaan_id')->unsigned();
             $table->foreign('perusahaan_id')
                 ->references('id')
                 ->on('perusahaan')
