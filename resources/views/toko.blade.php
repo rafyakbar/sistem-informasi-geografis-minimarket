@@ -1,5 +1,9 @@
 @extends('layouts.carbon.app')
 
+@push('css')
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+@endpush
+
 @section('content')
     <button class="btn btn-info" id="dm">Daftar Minimarket</button>
     <button class="btn btn-primary" id="tm">Tambah Minimarket</button>
@@ -85,6 +89,7 @@
                             </td>
                             <td>
                                 <button onclick="event.preventDefault(); update('{{ $toko->id }}', $('#perusahaan-{{ $toko->id }}').val(), $('#negara-{{ $toko->id }}').val(), $('#provinsi-{{ $toko->id }}').val(), $('#kota-{{ $toko->id }}').val(), $('#kecamatan-{{ $toko->id }}').val(), $('#alamat-{{ $toko->id }}').val(), $('#lat-{{ $toko->id }}').val(), $('#lng-{{ $toko->id }}').val(), $('#catatan-{{ $toko->id }}').val())" class="btn btn-success btn-sm">Simpan</button>
+                                <a href="{{ route('admin.toko.delete', ['id' => encrypt($toko->id)]) }}" class="btn btn-danger btn-sm">Hapus</a>
                             </td>
                         </tr>
                     @endforeach
@@ -107,7 +112,11 @@
                         </select>
                     </div>
                     <div class="col-lg-4">
-                        <input type="text" name="lokasi" class="form-control" placeholder="contoh : jawa timur">
+                        <select class="form-control" name="lokasi" id="kp" style="width: 100%">
+                            @foreach($kp as $l)
+                                <option value="{{ $l }}">{{ $l }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="col-lg-4">
                         <input type="submit" id="addmany" class="btn btn-success" value="Tambahkan">
@@ -215,6 +224,12 @@
 @endsection
 
 @push('js')
+    <script>
+        $(document).ready(function() {
+            $('#kp').select2();
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
     <script>
         var unesa, map, marker;
 

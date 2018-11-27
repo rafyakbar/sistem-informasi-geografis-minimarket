@@ -26,9 +26,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
     })->name('admin.dashboard');
 
 
-    Route::get('perusahaan', [
-        'uses' => 'PerusahaanController@index',
-        'as' => 'admin.perusahaan'
+    Route::get('etc', [
+        'uses' => 'EtcController@index',
+        'as' => 'admin.etc'
     ]);
 
     Route::group(['prefix' => 'toko'], function () {
@@ -52,6 +52,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
             'as' => 'admin.toko.update'
         ]);
 
+        Route::get('delete/{id}', [
+            'uses' => 'TokoController@delete',
+            'as' => 'admin.toko.delete'
+        ]);
     });
 
     Route::get('geocode', [
