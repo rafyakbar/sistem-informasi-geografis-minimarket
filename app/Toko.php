@@ -9,7 +9,7 @@ class Toko extends Model
     protected $table = 'toko';
 
     protected $fillable = [
-        'perusahaan_id', 'alamat', 'lat', 'lng', 'negara', 'provinsi', 'kota', 'kecamatan'
+        'perusahaan_id', 'alamat', 'lat', 'lng', 'negara', 'provinsi', 'kota', 'kecamatan', 'catatan'
     ];
 
     /**

@@ -12,15 +12,9 @@
                 </a>
 
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a href="#" class="dropdown-item">
-                        <i class="icon icon-home"></i> Perusahaan
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        <i class="icon icon-settings"></i> Toko
-                    </a>
-                    <a href="#" class="dropdown-item" onclick="event.preventDefault();document.getElementById('logout').submit()">
-                        <i class="icon icon-lock"></i> Keluar
-                    </a>
+                    <a href="{{ route('admin.toko') }}" class="dropdown-item">Toko</a>
+                    <a href="{{ route('admin.etc') }}" class="dropdown-item">Etc</a>
+                    <a href="#" class="dropdown-item" onclick="event.preventDefault();document.getElementById('logout').submit()">Keluar</a>
                 </div>
             </li>
         @else
