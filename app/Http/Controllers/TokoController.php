@@ -129,4 +129,18 @@ class TokoController extends Controller
 
         return back();
     }
+
+    /**
+     * Melakukan pencarian berdasarkan lat, lng, dan perusahaan
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return void
+     */
+    public function search(Request $request)
+    {
+        $query = Toko::query();
+
+        return $request->all();
+    }
+
 }

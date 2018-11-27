@@ -51,6 +51,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
             'uses' => 'TokoController@update',
             'as' => 'admin.toko.update'
         ]);
+
     });
 
     Route::get('geocode', [
@@ -62,4 +63,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         'uses' => 'TokoController@reverse',
         'as' => 'admin.reverse'
     ]);
+});
+
+
+Route::prefix('toko')->group(function () {
+
+    Route::post('search', [
+        'uses' => 'TokoController@search',
+        'as' => 'toko.search'
+    ]);
+
 });
