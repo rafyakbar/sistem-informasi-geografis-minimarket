@@ -596,7 +596,7 @@ class TokoController extends Controller
         foreach ($tokos as $toko){
             $geocode = OpenStreetMaps::reverseGeocode($toko->lat, $toko->lon, 15);
 
-            Toko::create([
+            $t = Toko::create([
                 'perusahaan_id' => $perusahaan->id,
                 'negara' => $geocode->address->country ?? '',
                 'provinsi' => $geocode->address->state ?? '',
@@ -636,19 +636,6 @@ class TokoController extends Controller
         ]);
 
         return back();
-    }
-
-    /**
-     * Melakukan pencarian berdasarkan lat, lng, dan perusahaan
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return void
-     */
-    public function search(Request $request)
-    {
-        $query = Toko::query();
-
-        return $request->all();
     }
 
     public function delete(Request $request)
