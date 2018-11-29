@@ -25,7 +25,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         return redirect()->route('admin.perusahaan');
     })->name('admin.dashboard');
 
-
     Route::get('etc', [
         'uses' => 'EtcController@index',
         'as' => 'admin.etc'
@@ -72,6 +71,40 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         Route::get('delete/{id}', [
             'uses' => 'EtcController@perusahaanDelete',
             'as' => 'admin.perusahaan.delete'
+        ]);
+    });
+
+    Route::group(['prefix' => 'barang'], function () {
+        Route::post('edit', [
+            'uses' => 'EtcController@barangEdit',
+            'as' => 'admin.barang.edit'
+        ]);
+
+        Route::get('delete/{id}', [
+            'uses' => 'EtcController@barangDelete',
+            'as' => 'admin.barang.delete'
+        ]);
+
+        Route::post('store', [
+            'uses' => 'EtcController@barangStore',
+            'as' => 'admin.barang.store'
+        ]);
+    });
+
+    Route::group(['prefix' => 'kategori'], function () {
+        Route::post('store', [
+            'uses' => 'EtcController@kategoriStore',
+            'as' => 'admin.kategori.store'
+        ]);
+
+        Route::post('edit', [
+            'uses' => 'EtcController@kategoriEdit',
+            'as' => 'admin.kategori.edit'
+        ]);
+
+        Route::get('delete/{id}', [
+            'uses' => 'EtcController@kategoriDelete',
+            'as' => 'admin.kategori.delete'
         ]);
     });
 

@@ -14,8 +14,11 @@ class CreateFotoTable extends Migration
     public function up()
     {
         Schema::create('foto', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('toko_id')->unsigned();
+            $table->bigIncrements('id')
+                ->index();
+            $table->bigInteger('toko_id')
+                ->unsigned()
+                ->index();
             $table->foreign('toko_id')
                 ->references('id')
                 ->on('toko')

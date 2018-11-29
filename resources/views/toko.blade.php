@@ -88,8 +88,11 @@
                                 <textarea id="catatan-{{ $toko->id }}" class="form-control">{{ $toko->catatan }}</textarea>
                             </td>
                             <td>
-                                <button onclick="event.preventDefault(); update('{{ $toko->id }}', $('#perusahaan-{{ $toko->id }}').val(), $('#negara-{{ $toko->id }}').val(), $('#provinsi-{{ $toko->id }}').val(), $('#kota-{{ $toko->id }}').val(), $('#kecamatan-{{ $toko->id }}').val(), $('#alamat-{{ $toko->id }}').val(), $('#lat-{{ $toko->id }}').val(), $('#lng-{{ $toko->id }}').val(), $('#catatan-{{ $toko->id }}').val())" class="btn btn-success btn-sm">Simpan</button>
-                                <a href="{{ route('admin.toko.delete', ['id' => encrypt($toko->id)]) }}" class="btn btn-danger btn-sm">Hapus</a>
+                                <div class="btn-group">
+                                    <button onclick="event.preventDefault(); update('{{ $toko->id }}', $('#perusahaan-{{ $toko->id }}').val(), $('#negara-{{ $toko->id }}').val(), $('#provinsi-{{ $toko->id }}').val(), $('#kota-{{ $toko->id }}').val(), $('#kecamatan-{{ $toko->id }}').val(), $('#alamat-{{ $toko->id }}').val(), $('#lat-{{ $toko->id }}').val(), $('#lng-{{ $toko->id }}').val(), $('#catatan-{{ $toko->id }}').val())" class="btn btn-success btn-sm">S</button>
+                                    <a href="{{ route('admin.toko.delete', ['id' => encrypt($toko->id)]) }}" class="btn btn-danger btn-sm">H</a>
+                                </div>
+                                <button class="btn btn-info btn-sm">Image</button>
                             </td>
                         </tr>
                     @endforeach

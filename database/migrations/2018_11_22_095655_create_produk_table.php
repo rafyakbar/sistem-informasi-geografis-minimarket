@@ -15,13 +15,17 @@ class CreateProdukTable extends Migration
     {
         Schema::create('produk', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('barang_id')->unsigned();
+            $table->integer('barang_id')
+                ->unsigned()
+                ->index();
             $table->foreign('barang_id')
                 ->references('id')
                 ->on('barang')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->bigInteger('toko_id')->unsigned();
+            $table->bigInteger('toko_id')
+                ->unsigned()
+                ->index();
             $table->foreign('toko_id')
                 ->references('id')
                 ->on('toko')
