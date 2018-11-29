@@ -58,6 +58,23 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         ]);
     });
 
+    Route::group(['prefix' => 'perusahaan'], function () {
+        Route::post('store', [
+            'uses' => 'EtcController@perusahaanStore',
+            'as' => 'admin.perusahaan.store'
+        ]);
+
+        Route::post('edit', [
+            'uses' => 'EtcController@perusahaanEdit',
+            'as' => 'admin.perusahaan.edit'
+        ]);
+
+        Route::get('delete/{id}', [
+            'uses' => 'EtcController@perusahaanDelete',
+            'as' => 'admin.perusahaan.delete'
+        ]);
+    });
+
     Route::get('geocode', [
         'uses' => 'TokoController@geocode',
         'as' => 'admin.geocode'
