@@ -55,6 +55,23 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
             'uses' => 'TokoController@delete',
             'as' => 'admin.toko.delete'
         ]);
+
+        Route::group(['prefix' => 'foto'], function () {
+            Route::get('{id}/{no}', [
+                'uses' => 'TokoController@foto',
+                'as' => 'admin.toko.foto'
+            ]);
+
+            Route::post('store', [
+                'uses' => 'TokoController@fotoStore',
+                'as' => 'admin.toko.foto.store'
+            ]);
+
+            Route::get('delete', [
+                'uses' => 'TokoController@fotoDelete',
+                'as' => 'admin.toko.foto.delete'
+            ]);
+        });
     });
 
     Route::group(['prefix' => 'perusahaan'], function () {

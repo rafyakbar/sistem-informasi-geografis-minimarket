@@ -14,13 +14,37 @@
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
 </head>
 <body class="header-fixed">
-<div class="page-wrapper">
-    <div class="main-container">
-        <div class="content">
-
-        </div>
-    </div>
-</div>
+            <div class="card card-body">
+                <div class="alert alert-info">
+                    Toko nomor {{ $no }}
+                </div>
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <form action="{{ route('admin.toko.foto.store') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" value="{{ $toko->id }}" name="toko_id">
+                    <label>Tambah foto</label>
+                    <br>
+                    <input type="file" class="form-control" name="dir[]" multiple accept="image/*">
+                    <br>
+                    <button class="btn btn-success" type="submit">Simpan</button>
+                </form>
+                <div class="row">
+                    @foreach($toko->getFoto(false) as $foto)
+                        <div class="col-lg-4">
+                            <img src="{{ asset($foto->dir) }}" class="img-fluid" alt="Responsive image">
+                            <a class="btn btn-danger btn-sm btn-block text-white" href="{{ route('admin.toko.foto.delete', ['id' => encrypt($foto->id)]) }}">Hapus</a>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{{ asset('js/carbon.js') }}"></script>
 </body>
