@@ -573,7 +573,7 @@ class TokoController extends Controller
         if ($request->has('foto')){
             foreach ($request->foto as $file){
                 $foto = Foto::create([
-                    'galeri_id' => $toko->id,
+                    'toko_id' => $toko->id,
                     'dir' => ''
                 ]);
                 $file->move('images/galeri', $foto->id.'_'.$foto->id.'_'.$file->getClientOriginalName());
@@ -666,4 +666,35 @@ class TokoController extends Controller
         );
     }
 
+    public function foto(Request $request)
+    {
+        return view('toko_foto', [
+            'toko' => Toko::query()->find(decrypt($request->id)),
+            'no' => $request->no
+        ]);
+    }
+
+    public function fotoStore(Request $request)
+    {
+        if ($request->has('dir')){
+            foreach ($request->dir as $file){
+                $foto = Foto::create([
+                    'toko_id' => $request->toko_id,
+                    'dir' => ''
+                ]);
+                $file->move('images/galeri', $foto->id.'_'.$foto->id.'_'.$file->getClientOriginalName());
+                $foto->dir = 'images/galeri/'.$foto->id.'_'.$foto->id.'_'.$file->getClientOriginalName();
+                $foto->save();
+            }
+        }
+
+        return back();
+    }
+
+    public function fotoDelete(Request $request)
+    {
+        Foto::query()->find(decrypt($request->id))->delete();
+
+        return back();
+    }
 }

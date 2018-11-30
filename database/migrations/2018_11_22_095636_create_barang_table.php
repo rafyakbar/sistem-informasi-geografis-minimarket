@@ -14,15 +14,18 @@ class CreateBarangTable extends Migration
     public function up()
     {
         Schema::create('barang', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('kategori_id')->unsigned();
+            $table->increments('id')
+                ->index();
+            $table->integer('kategori_id')
+                ->unsigned();
             $table->foreign('kategori_id')
                 ->references('id')
                 ->on('kategori')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string('nama')
-                ->unique();
+                ->unique()
+                ->index();
             $table->timestamps();
         });
     }

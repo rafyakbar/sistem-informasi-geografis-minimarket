@@ -52,7 +52,7 @@
                     <tbody>
                     @foreach($tokos as $toko)
                         <tr>
-                            <td>{{ ($tokos->currentpage() * $tokos->perpage()) + ($loop->iteration) - $tokos->perpage() }}</td>
+                            <td>{{ $no = ($tokos->currentpage() * $tokos->perpage()) + ($loop->iteration) - $tokos->perpage() }}</td>
                             <td>
                                 <select class="form-control" name="perusahaan_id" id="perusahaan-{{ $toko->id }}">
                                     <option value="{{ $toko->perusahaan_id }}">{{ $toko->getPerusahaan(false)->nama }}</option>
@@ -88,8 +88,11 @@
                                 <textarea id="catatan-{{ $toko->id }}" class="form-control">{{ $toko->catatan }}</textarea>
                             </td>
                             <td>
-                                <button onclick="event.preventDefault(); update('{{ $toko->id }}', $('#perusahaan-{{ $toko->id }}').val(), $('#negara-{{ $toko->id }}').val(), $('#provinsi-{{ $toko->id }}').val(), $('#kota-{{ $toko->id }}').val(), $('#kecamatan-{{ $toko->id }}').val(), $('#alamat-{{ $toko->id }}').val(), $('#lat-{{ $toko->id }}').val(), $('#lng-{{ $toko->id }}').val(), $('#catatan-{{ $toko->id }}').val())" class="btn btn-success btn-sm">Simpan</button>
-                                <a href="{{ route('admin.toko.delete', ['id' => encrypt($toko->id)]) }}" class="btn btn-danger btn-sm">Hapus</a>
+                                <div class="btn-group">
+                                    <button onclick="event.preventDefault(); update('{{ $toko->id }}', $('#perusahaan-{{ $toko->id }}').val(), $('#negara-{{ $toko->id }}').val(), $('#provinsi-{{ $toko->id }}').val(), $('#kota-{{ $toko->id }}').val(), $('#kecamatan-{{ $toko->id }}').val(), $('#alamat-{{ $toko->id }}').val(), $('#lat-{{ $toko->id }}').val(), $('#lng-{{ $toko->id }}').val(), $('#catatan-{{ $toko->id }}').val())" class="btn btn-success btn-sm">S</button>
+                                    <a href="{{ route('admin.toko.delete', ['id' => encrypt($toko->id)]) }}" class="btn btn-danger btn-sm">H</a>
+                                </div>
+                                <button class="btn btn-info btn-sm" onclick="event.preventDefault(); $('#frame').show(); $('#frame').attr('src', '{{ route('admin.toko.foto', ['id' => encrypt($toko->id), 'no' => $no]) }}'); $('html,body').animate({scrollTop: $('#frame').offset().top}, 'slow')">Image</button>
                             </td>
                         </tr>
                     @endforeach
@@ -143,7 +146,7 @@
                             <div class="col-lg-6">
                                 <label>Foto-foto</label>
                                 <br>
-                                <input type="file" class="form-control" name="foto" multiple accept="image/*">
+                                <input type="file" class="form-control" name="foto[]" multiple accept="image/*">
                             </div>
                         </div>
                         <br>
@@ -207,6 +210,8 @@
             </div>
         </div>
     </div>
+
+    <iframe id="frame" style="width: 100%; height: 500px; display: none"></iframe>
 
     <form style="display: none" id="form-update" action="{{ route('admin.toko.update') }}" method="post">
         @csrf
@@ -298,6 +303,40 @@
                         var data = JSON.parse(response)
 
                         if (data.length != 0){
+                            min_latitude = Number(data.boundingbox[0])
+                            max_latitude = Number(data.boundingbox[1])
+                            min_longitude = Number(data.boundingbox[2])
+                            max_longitude = Number(data.boundingbox[3])
+
+                            console.log(data.boundingbox)
+
+                            console.log([
+                                min_longitude,
+                                max_longitude,
+                                min_latitude,
+                                max_latitude
+                            ])
+
+                            var flightPlanCoordinates = [
+                                {lat: min_latitude, lng: min_longitude},
+                                {lat: min_latitude, lng: max_longitude},
+                                {lat: max_latitude, lng: max_longitude},
+                                {lat: max_latitude, lng: min_longitude},
+                                {lat: min_latitude, lng: min_longitude}
+                            ];
+
+                            console.log(flightPlanCoordinates)
+
+                            var flightPath = new google.maps.Polyline({
+                                path: flightPlanCoordinates,
+                                geodesic: true,
+                                strokeColor: '#FF0000',
+                                strokeOpacity: 1.0,
+                                strokeWeight: 2
+                            });
+
+                            flightPath.setMap(map);
+
                             if (confirm('Apakah anda ingin memperbarui data lokasi?')){
                                 $('#negara').val(data.address.country)
                                 $('#provinsi').val(data.address.state)

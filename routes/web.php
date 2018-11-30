@@ -25,7 +25,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         return redirect()->route('admin.perusahaan');
     })->name('admin.dashboard');
 
-
     Route::get('etc', [
         'uses' => 'EtcController@index',
         'as' => 'admin.etc'
@@ -55,6 +54,74 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         Route::get('delete/{id}', [
             'uses' => 'TokoController@delete',
             'as' => 'admin.toko.delete'
+        ]);
+
+        Route::group(['prefix' => 'foto'], function () {
+            Route::get('{id}/{no}', [
+                'uses' => 'TokoController@foto',
+                'as' => 'admin.toko.foto'
+            ]);
+
+            Route::post('store', [
+                'uses' => 'TokoController@fotoStore',
+                'as' => 'admin.toko.foto.store'
+            ]);
+
+            Route::get('delete', [
+                'uses' => 'TokoController@fotoDelete',
+                'as' => 'admin.toko.foto.delete'
+            ]);
+        });
+    });
+
+    Route::group(['prefix' => 'perusahaan'], function () {
+        Route::post('store', [
+            'uses' => 'EtcController@perusahaanStore',
+            'as' => 'admin.perusahaan.store'
+        ]);
+
+        Route::post('edit', [
+            'uses' => 'EtcController@perusahaanEdit',
+            'as' => 'admin.perusahaan.edit'
+        ]);
+
+        Route::get('delete/{id}', [
+            'uses' => 'EtcController@perusahaanDelete',
+            'as' => 'admin.perusahaan.delete'
+        ]);
+    });
+
+    Route::group(['prefix' => 'barang'], function () {
+        Route::post('edit', [
+            'uses' => 'EtcController@barangEdit',
+            'as' => 'admin.barang.edit'
+        ]);
+
+        Route::get('delete/{id}', [
+            'uses' => 'EtcController@barangDelete',
+            'as' => 'admin.barang.delete'
+        ]);
+
+        Route::post('store', [
+            'uses' => 'EtcController@barangStore',
+            'as' => 'admin.barang.store'
+        ]);
+    });
+
+    Route::group(['prefix' => 'kategori'], function () {
+        Route::post('store', [
+            'uses' => 'EtcController@kategoriStore',
+            'as' => 'admin.kategori.store'
+        ]);
+
+        Route::post('edit', [
+            'uses' => 'EtcController@kategoriEdit',
+            'as' => 'admin.kategori.edit'
+        ]);
+
+        Route::get('delete/{id}', [
+            'uses' => 'EtcController@kategoriDelete',
+            'as' => 'admin.kategori.delete'
         ]);
     });
 
