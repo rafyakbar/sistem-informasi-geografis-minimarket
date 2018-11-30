@@ -644,4 +644,26 @@ class TokoController extends Controller
 
         return back();
     }
+
+    public function ringkasanTransaksiPerHariPerJam(Toko $toko)
+    {
+        return response()->json(
+            $toko->getRingkasanTransaksi()
+        );
+    }
+
+    public function ringkasanTransaksiPerJam(Toko $toko)
+    {
+        return response()->json(
+            collect($toko->getRingkasanTransaksi('jam'))->values()
+        );
+    }
+
+    public function ringkasanTransaksiPerHari(Toko $toko)
+    {
+        return response()->json(
+            collect($toko->getRingkasanTransaksi('hari'))->values()
+        );
+    }
+
 }

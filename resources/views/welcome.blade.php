@@ -19,16 +19,13 @@
         }
 
         #app, #map {
-            height: 100%;
-            width: 100%
+            height: 100vh;
         }
 
         #tools {
-            z-index: +10;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 300px;
+            height: 100vh;
+            overflow-y: auto;
+            background-color: #fff;
         }
 
         .bdr {
@@ -46,33 +43,79 @@
 
                 <div id="app">
 
-                    <div id="tools">
-                        <div class="card border-0">
-                            <div class="card-body p-0">
-                                <div class="search p-3">
-                                    <input type="text" class="form-control" id="search-autocomplete"/>
-                                    <select class="custom-select" v-model="searchQuery.perusahaan">
-                                        <option :value="null">Semua Minimarket</option>
-                                        <option v-for="perusahaan in daftarPerusahaan">@{{ perusahaan.nama }}</option>
-                                    </select>
+                    <div class="container-fluid p-0">
+                        <div class="row m-0 p-0">
+                            <div class="col-lg-4 m-0 p-0">
+                                <div id="tools">
+                                    <div class="card border-0 mb-0">
+                                        <div class="card-body p-0">
+                                            <div class="search p-3">
+                                                <input type="text" class="form-control" id="search-autocomplete"/>
+                                                <select class="custom-select" v-model="searchQuery.perusahaan">
+                                                    <option :value="null">Semua Minimarket</option>
+                                                    <option v-for="perusahaan in daftarPerusahaan">@{{ perusahaan.nama }}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-body" v-if="status === 'index'">
+                                            <div class="btn btn-primary btn-lg" @click="clustering">
+                                                Lakukan Clustering
+                                            </div>
+                                        </div>
+
+                                        <div class="card-body" v-if="status === 'search'">
+                                            <div class="list-group">
+                                                <a href="#" @click.prevent="bukaDetailMinimarket($event, toko)" class="list-group-item" v-for="toko in daftarToko">
+                                                    @{{ toko.alamat }}
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        {{-- <div class="card-body p-3" > --}}
+                                        <template v-if="status === 'detail'">
+                                            <table class="table table-bordered">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Jenis</td>
+                                                        <td>@{{ detailToko.get_perusahaan.nama }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Alamat</td>
+                                                        <td>@{{ detailToko.alamat }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Latitude</td>
+                                                        <td>@{{ detailToko.lat }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Longitude</td>
+                                                        <td>@{{ detailToko.lng }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        {{-- </div> --}}
+
+                                            <div class="card-body">
+                                                <h5>Rata-rata Transaksi Per Jam</h5>
+                                                <canvas style="width: 100%;height 200px" id="transaksi-per-jam"></canvas>
+
+                                                <h5>Rata-rata Transaksi Per Hari</h5>
+                                                <canvas style="width: 100%;height 200px" id="transaksi-per-hari"></canvas>
+
+                                                <h5>Barang Populer</h5>
+                                            </div>
+                                        </template>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="card-body" v-if="status === 'search'">
-                                <div class="list-group">
-                                    <a href="#" @click.prevent="bukaDetailMinimarket($event, toko)" class="list-group-item" v-for="toko in daftarToko">
-                                        @{{ toko.alamat }}
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="card-body p-3" v-if="status === 'detail'">
-                                @{{ detailToko.alamat }}
+                            <div class="col-lg-8 m-0 p-0">
+                                <div id="map"></div>
                             </div>
                         </div>
                     </div>
 
-                    <div id="map"></div>
                 </div>
 
             </div>
@@ -83,17 +126,24 @@
 
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/carbon.js') }}"></script>
+    <script src="{{ asset('js/kmeans.js') }}"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <script src="{{ asset('js/maps/home.js') }}"></script>
     <script>
         window.data = {
             daftarToko: @json($daftarToko),
-            daftarPerusahaan: @json($daftarPerusahaan)
+            daftarPerusahaan: @json($daftarPerusahaan),
+            icons: {
+                biru: '{{ asset('images/marker_biru.png') }}',
+                kuning: '{{ asset('images/marker_kuning.png') }}',
+                hijau: '{{ asset('images/marker_hijau.png') }}'
+            }
         }
         window.actionUrl = {
-            search: '{{ route('toko.search') }}'
+            detailTransaksiPerJam: '{{ route('ringkasan.transaksi.perjam', ['toko' => '']) }}',
+            detailTransaksiPerHari: '{{ route('ringkasan.transaksi.perhari', ['toko' => '']) }}'
         }
     </script>
-    <script src="{{ asset('js/maps/home.js') }}"></script>
-    <script async defer
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAd3dSy2ivrW8j-Pmz12_bs2rwSaCapCx8&libraries=places,geometry&callback=initMap"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAd3dSy2ivrW8j-Pmz12_bs2rwSaCapCx8&libraries=places,geometry&callback=initMap"></script>
 </body>
 </html>

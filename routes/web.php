@@ -72,9 +72,19 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
 
 Route::prefix('toko')->group(function () {
 
-    Route::post('search', [
-        'uses' => 'TokoController@search',
-        'as' => 'toko.search'
+    Route::get('ringkasan/transaksi/harijam/{toko}', [
+        'uses' => 'TokoController@ringkasanTransaksiPerHariPerJam',
+        'as' => 'ringkasan.transaksi.perhariperjam'
+    ]);
+
+    Route::get('ringkasan/transaksi/jam/{toko}', [
+        'uses' => 'TokoController@ringkasanTransaksiPerJam',
+        'as' => 'ringkasan.transaksi.perjam'
+    ]);
+
+    Route::get('ringkasan/transaksi/hari/{toko}', [
+        'uses' => 'TokoController@ringkasanTransaksiPerHari',
+        'as' => 'ringkasan.transaksi.perhari'
     ]);
 
 });

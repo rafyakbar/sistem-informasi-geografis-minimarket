@@ -21,4 +21,15 @@ class Transaksi extends Model
         $data = $this->belongsToMany(Produk::class, 'transaksi_produk', 'transaksi_id', 'produk_id')->withPivot('harga', 'jumlah');
         return $queryReturn ? $data : $data->get();
     }
+
+    public function scopeWhereDayOfWeek($query, $field, $value)
+    {
+        return $query->whereRaw('extract(dow from ' . $field . ') = ' . $value);
+    }
+
+    public function scopeWhereHour($query, $field, $operator, $value)
+    {
+        return $query->whereRaw('extract(hour from ' . $field . ') ' . $operator . ' '. $value);
+    }
+
 }
