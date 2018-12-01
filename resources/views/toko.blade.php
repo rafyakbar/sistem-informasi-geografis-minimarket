@@ -236,7 +236,7 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
     <script>
-        var unesa, map, marker;
+        var unesa, map, marker, flightPath = null;
 
         $('#tm').click(function () {
             $('#daftar-toko').hide()
@@ -327,7 +327,11 @@
 
                             console.log(flightPlanCoordinates)
 
-                            var flightPath = new google.maps.Polyline({
+                            if (flightPath != null){
+                                flightPath.setMap(null);
+                            }
+
+                            flightPath = new google.maps.Polyline({
                                 path: flightPlanCoordinates,
                                 geodesic: true,
                                 strokeColor: '#FF0000',
