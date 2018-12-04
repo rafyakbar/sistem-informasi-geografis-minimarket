@@ -21,19 +21,39 @@ function initMap() {
                 jam: null,
                 hari: null
             },
-            clusteringData: []
+            clusteringData: [],
+            barangPopuler: [],
+            lightSlider: null,
+            fetchingData: {
+                status: false,
+                progress: 0
+            }
         },
 
         mounted: function () {
+            this.fetchData()
             this.initmarkerIcon()
             this.initMap()
-            this.initMarkerToko()
             this.geolocation()
             this.initAutocomplete()
             this.daftarPerusahaan = window.data.daftarPerusahaan
         },
 
         methods: {
+            /**
+             * Melakukan pengambilan data
+             */
+            fetchData: function () {
+                var that = this
+                this.fetchingData.status = true
+
+                axios.get(window.actionUrl.fetchingData).then(function (response) {
+                    window.data.daftarToko = response.data
+                    that.fetchingData.status = false
+                    that.initMarkerToko()
+                })
+            },
+
             initmarkerIcon: function () {
                 this.markerIcon.kuning = {
                     url: window.data.icons.kuning
@@ -48,12 +68,15 @@ function initMap() {
                 }
             },
 
+            /**
+             * Inisialisasi map
+             */
             initMap: function () {
                 var that = this
 
                 this.map = new google.maps.Map(
                     document.getElementById('map'), {
-                        zoom: 8,
+                        zoom: 10,
                         center: that.center,
                         streetViewControl: false,
                         mapTypeControl: false,
@@ -92,6 +115,9 @@ function initMap() {
                 }
             },
 
+            /**
+             * Inisialisasi autocomplete
+             */
             initAutocomplete: function () {
                 // Autocomplete
                 var that = this
@@ -145,22 +171,20 @@ function initMap() {
                 var lng = this.searchQuery.lng
                 var that = this
 
-                this.markers.map(function (item) {
-                    item.setMap(null)
-                })
-
-                this.markers = []
                 this.daftarToko = []
 
-                window.data.daftarToko.map(function (item) {
+                this.markers.map(function (item, index) {
+                    item.setVisible(true)
                     var jarak = google.maps.geometry.spherical.computeDistanceBetween(
                         new google.maps.LatLng(lat, lng),
-                        new google.maps.LatLng(item.lat, item.lng)
+                        new google.maps.LatLng(item.position.lat(), item.position.lng())
                     )
 
                     if (jarak < 1000) {
-                        that.addMarker(item)
-                        that.daftarToko.push(item)
+                        that.daftarToko.push(window.data.daftarToko[index])
+                    }
+                    else {
+                        item.setVisible(false)
                     }
                 })
 
@@ -180,12 +204,22 @@ function initMap() {
                         lat: parseFloat(camar.lat),
                         lng: parseFloat(camar.lng)
                     },
-                    map: that.map
+                    map: that.map,
+                    label: {
+                        text: camar.get_perusahaan.nama,
+                        fontSize: '12px'
+                    }
                 })
+
+                if (camar.icon) {
+                    marker.setIcon(camar.icon)
+                }
 
                 marker.addListener('click', function (e) {
                     that.map.panTo(marker.getPosition())
                     that.bukaDetailMinimarket(e, camar)
+                    that.detailToko = camar
+                    that.$forceUpdate()
                 })
 
                 this.markers.push(marker)
@@ -205,10 +239,23 @@ function initMap() {
 
                 this.status = 'detail'
                 this.detailToko = toko
+                toko.barangPopuler = []
 
                 this.$nextTick(function () {
                     that.waktuPopulerChart(that.detailToko)
                 })
+
+                that.tampilkanBarangPopuler(that.detailToko)
+            },
+
+            tampilkanBarangPopuler: function (toko) {
+                var that = this
+
+                axios.get(window.actionUrl.getBarangPopuler + '/' + toko.id).then(function (response) {
+                    toko.barangPopuler = response.data
+                    that.$forceUpdate()
+                })
+
             },
 
             /**
@@ -234,7 +281,7 @@ function initMap() {
                         datasets: [{
                             label: '# transaksi',
                             data: toko.transaksi_per_jam,
-                            backgroundColor: 'rgb(54, 162, 235)',
+                            backgroundColor: '#5e94ff',
                         }]
                     },
                     options: {
@@ -256,7 +303,7 @@ function initMap() {
                             datasets: [{
                                 label: '# transaksi',
                                 data: response.data,
-                                backgroundColor: 'rgb(54, 162, 235)',
+                                backgroundColor: '#5e94ff',
                             }]
                         },
                         options: {
@@ -278,6 +325,9 @@ function initMap() {
                 })
             },
 
+            /**
+             * Melakukan clustering terhadap semua toko
+             */
             clustering: function () {
                 let that = this
                 var iconColor = [
@@ -291,12 +341,39 @@ function initMap() {
                 var kmeans = new Kmeans(this.clusteringData, 3, function (err, result) {
                     for (var cluster in result) {
                         for (var row in result[cluster]) {
-                            console.log(result[cluster][row])
                             var toko = that.markers[result[cluster][row].index]
                             toko.setIcon(iconColor[cluster])
                         }
                     }
                 })
+            },
+
+            tampilkanSemuaToko: function () {
+                this.markers.map(function (item) {
+                    item.setVisible(true)
+                })
+            }
+        },
+
+        watch: {
+            'searchQuery.perusahaan': function (value) {
+                var that = this
+
+                window.data.daftarToko.map(function (item, index) {
+                    that.markers[index].setVisible(true)
+
+                    if (item.get_perusahaan.nama != value) {
+                        that.markers[index].setVisible(false)
+                    }
+                })
+            }
+        },
+
+        computed: {
+            'markerYangDitampilkan': function () {
+                return this.markers.filter(function (item) {
+                    return item.visible
+                }).length
             }
         }
     })

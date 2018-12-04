@@ -1,25 +1,119 @@
-.custom-control {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+html, body {
+    font-family: 'San Fransisco Display';
+    height: 100vh;
 }
 
-.custom-control-lg .custom-control-label::before,
-.custom-control-lg .custom-control-label::after {
-  top: 0;
-  width: 25px;
-  height: 25px;
-  border-radius: 5px;
+.page-wrapper,
+.content,
+#app,
+#map {
+    height: 100%
 }
 
-.custom-control-label {
-  margin-left: 10px;
+.content {
+    padding: 0;
+    margin-top: 0;
 }
 
-.custom-control-label:not(.disabled):hover::after {
-  background-color: #42a5f5;
+#app {
+    padding-top: 61px;
 }
 
+#tools {
+    height: 100%;
+    overflow-y: auto;
+    background-color: #fff;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    z-index: +1;
+    position: relative;
+}
+
+.bdr {
+    border-radius: 30px;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    z-index: 2;
+    width: 100vw;
+}
+
+.navbar-blue {
+    background-color: #5485e5;
+    color: #fff;
+}
+
+.full-height {
+    height: 100%;
+}
+
+.form-search {
+    background-color: rgba(255, 255, 255, .35);
+    border-radius: 30px;
+    padding: 10px 25px;
+}
+
+.form-search input,
+.form-search select,
+.form-search button {
+    border: none;
+    background: none;
+    outline: none;
+    color: #fff;
+}
+
+.bg-gray {
+    background-color: #eee;
+}
+
+.bg-light-blue,
+.badge-light-blue {
+    background-color: #dde8ff;
+}
+
+.badge-light-blue {
+    color: #5485e5
+}
+
+.badge-light-orange {
+    background-color: #ffe9be
+}
+
+.text-blue {
+    color: #5485e5;
+}
+
+.text-orange {
+    color: #E5B045;
+}
+
+.badge-lg {
+    padding: 10px;
+    font-size: 12px;
+}
+
+.badge-hg {
+    padding: 15px;
+    font-size: 15px;
+}
+
+.list-group-borderless li {
+    border: 1px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.list-group-borderless li:hover {
+    background-color: #dde8ff;
+}
+
+.search-result .list-group-item {
+    cursor: pointer;
+    border-radius: 10px;
+    border: none
+}
+
+.search-result .list-group-item:hover {
+    background-color: #dde8ff;
+}

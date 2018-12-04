@@ -666,6 +666,13 @@ class TokoController extends Controller
         );
     }
 
+    public function barangPopuler(Toko $toko)
+    {
+        return response()->json(
+            $toko->getBarangTerlaris()
+        );
+    }
+
     public function foto(Request $request)
     {
         return view('toko_foto', [

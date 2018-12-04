@@ -20,6 +20,8 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/fetch-data', 'HomeController@fetchData')->name('fetch.data');
+
 Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
     Route::get('dashboard', function () {
         return redirect()->route('admin.perusahaan');
@@ -152,6 +154,11 @@ Route::prefix('toko')->group(function () {
     Route::get('ringkasan/transaksi/hari/{toko}', [
         'uses' => 'TokoController@ringkasanTransaksiPerHari',
         'as' => 'ringkasan.transaksi.perhari'
+    ]);
+
+    Route::get('barang/populer/{toko}', [
+        'uses' => 'TokoController@barangPopuler',
+        'as' => 'toko.barang.populer'
     ]);
 
 });

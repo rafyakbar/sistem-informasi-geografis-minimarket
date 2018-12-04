@@ -25,8 +25,8 @@ class Toko extends Model
     public function getRingkasanTransaksi($jenis = 'harijam')
     {
         $daftarTransaksi = $this->getTransaksi();
-        $start = Carbon::parse((clone $daftarTransaksi)->orderBy('created_at')->first()->created_at);
-        $end = Carbon::parse((clone $daftarTransaksi)->orderBy('created_at', 'DESC')->first()->created_at);
+        $start = Carbon::today()->addDays(-30);
+        $end = Carbon::now();
         $selisihHari = $start->diffInDays($end);
         $selisihMinggu = $start->diffInWeeks($end);
         $ringkasan = [];
@@ -50,6 +50,11 @@ class Toko extends Model
         }
 
         return $ringkasan;
+    }
+
+    public function getJumlahTransaksiMingguTerakhir()
+    {
+        return $this->getTransaksi()->where('created_at', '>=', Carbon::today()->addDays(-7))->where('created_at', '<', Carbon::tomorrow())->count();
     }
 
     /**
